@@ -387,6 +387,7 @@ export class GameEngine {
       if (block.content === 'coin') {
         this.addCoin();
         this.spawnBlockCoin(block.x + 4, block.y - 12);
+        this.spawnCoinExplosion(block.x + 8, block.y - 8);
         soundEngine.playCoin();
       } else if (block.content === 'mushroom' || block.content === 'fireflower') {
         const itemType = (this.mario.power === 'small') ? 'mushroom' : 'fireflower';
@@ -712,6 +713,9 @@ export class GameEngine {
       if (p.type === 'brick_shard') {
         p.vy += 0.25; // gravity for flying brick pieces
         p.rotation = (p.rotation || 0) + (p.rotSpeed || 0.1);
+      } else if (p.type === 'coin_pixel') {
+        p.vy += 0.08; // subtle gravity pulling coin sparkles
+        p.vx *= 0.95; // light air drag
       }
     }
     this.particles = this.particles.filter((p) => p.life < p.maxLife);
@@ -753,6 +757,8 @@ export class GameEngine {
           this.spawnScoreParticle(item.x, item.y, '1000');
         } else if (item.type === 'coin') {
           this.addCoin();
+          this.spawnCoinExplosion(item.x + 8, item.y + 8);
+          this.spawnScoreParticle(item.x, item.y - 4, '200');
           soundEngine.playCoin();
         }
       }
@@ -938,6 +944,7 @@ export class GameEngine {
       this.score += 100;
       if (this.globalAnimTimer % 3 === 0) {
         soundEngine.playCoin();
+        this.spawnCoinExplosion(this.mario.x + 8, this.mario.y - 8);
       }
     } else {
       this.stageClearBonusTimer++;
@@ -1062,6 +1069,34 @@ export class GameEngine {
       maxLife: 20,
       type: 'coin_sparkle',
     });
+  }
+
+  public spawnCoinExplosion(x: number, y: number) {
+    const count = 12;
+    const colors = ['#fcb040', '#ffffff', '#fce0a8', '#f88c00', '#fff8b0'];
+
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
+      const speed = 1.2 + Math.random() * 2.2;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed - 0.7; // slight upward fountain pop
+      const color = colors[i % colors.length];
+      const size = Math.random() > 0.4 ? 3 : 2;
+      const maxLife = 18 + Math.floor(Math.random() * 12);
+
+      this.particles.push({
+        id: `coin_px_${this.globalAnimTimer}_${i}_${Math.random()}`,
+        x,
+        y,
+        vx,
+        vy,
+        life: 0,
+        maxLife,
+        color,
+        size,
+        type: 'coin_pixel',
+      });
+    }
   }
 
   private spawnBrickShards(x: number, y: number) {

@@ -1122,6 +1122,18 @@ export class SpriteRenderer {
       ctx.fillRect(-2, -2, 4, 4);
       ctx.fillStyle = this.C.WHITE;
       ctx.fillRect(-1, -1, 2, 2);
+    } else if (p.type === 'coin_pixel') {
+      const alpha = Math.max(0, 1 - p.life / p.maxLife);
+      ctx.globalAlpha = alpha;
+      const size = p.size || 2;
+      ctx.fillStyle = p.color || this.C.COIN_GOLD;
+      ctx.fillRect(-Math.floor(size / 2), -Math.floor(size / 2), size, size);
+
+      // Bright glint in the center of particle during first half of life
+      if (p.life < p.maxLife * 0.4 && size >= 3) {
+        ctx.fillStyle = this.C.WHITE;
+        ctx.fillRect(0, 0, 1, 1);
+      }
     }
 
     ctx.restore();

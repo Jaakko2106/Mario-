@@ -129,8 +129,9 @@ export interface Particle {
   life: number;
   maxLife: number;
   color?: string;
+  size?: number;
   text?: string;
-  type: 'score' | 'brick_shard' | 'coin_sparkle' | 'smoke' | 'firework';
+  type: 'score' | 'brick_shard' | 'coin_sparkle' | 'smoke' | 'firework' | 'coin_pixel';
   rotation?: number;
   rotSpeed?: number;
 }
