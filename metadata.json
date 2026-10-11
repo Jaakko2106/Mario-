@@ -1,0 +1,6 @@
+{
+  "name": "Super Mario Bros. 8-Bit Retro Edition",
+  "description": "Authentic 8-bit NES style Super Mario Bros clone featuring retro pixel graphics, accurate physics and momentum, synthesized chiptune music and sound effects, classic enemies and power-ups, multiple worlds, and responsive keyboard and touch controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
